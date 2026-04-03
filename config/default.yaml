@@ -1,0 +1,45 @@
+model:
+  backbone: "resnet50"          # any timm model: resnet50, efficientnet_b3, convnext_tiny, etc.
+  pretrained: true
+  decoder_channels: 256
+  head_hidden: 128
+  shared_decoder: true          # true = share FPN decoder, false = per-task decoder
+
+datasets:
+  - task_id: 0
+    name: "voc_21class"
+    root: "data/dataset_01"     # Pascal VOC 2012 full 21-class segmentation
+    num_classes: 21
+  - task_id: 1
+    name: "voc_binary"
+    root: "data/dataset_02"     # Pascal VOC 2012 binarized (bg/fg)
+    num_classes: 2
+  - task_id: 2
+    name: "voc_8super"
+    root: "data/dataset_03"     # Pascal VOC 2012 remapped to 8 super-categories
+    num_classes: 8
+  - task_id: 3
+    name: "pets_trimap"
+    root: "data/dataset_04"     # Oxford-IIIT Pets 3-class trimap
+    num_classes: 3
+
+training:
+  img_size: [256, 256]          # smaller for faster CPU testing
+  batch_size: 8                 # 2 per task
+  epochs: 100
+  lr: 1e-4
+  weight_decay: 1e-4
+  lr_scheduler: "cosine"        # "cosine" or "step"
+  warmup_epochs: 5
+  num_workers: 0                # 0 for small datasets / debugging
+  seed: 42
+  save_dir: "checkpoints"
+  log_dir: "runs"
+  val_ratio: 0.2                # 20% of each dataset held out for validation
+  val_interval: 2               # validate every N epochs
+  save_best: true
+  visualization:
+    queue_size: 5               # keep last 5 images in the visual queue
+    interval_batches: 2         # update often for small dataset
+    save_dir: "vis"             # grid image saved to vis/live_queue.png
+    cell_height: 192            # pixel height per row in the grid
