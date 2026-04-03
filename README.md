@@ -5,15 +5,15 @@ Train one model on multiple segmentation datasets simultaneously. A shared backb
 ## Architecture
 
 ```
-                          ┌───────────────────────┐
-      Input Image ──────► │   Shared Backbone      │  (any timm model: resnet50, efficientnet_b3, ...)
+                          ┌──────────────────--─────┐
+      Input Image ──────► │   Shared Backbone       │  (any timm model: resnet50, efficientnet_b3, ...)
                           │   (ImageNet pretrained) │
-                          └───────┬────────────────┘
+                          └───────┬───────────────-─┘
                                   │  multi-scale features (C2, C3, C4, C5)
                                   ▼
-                          ┌───────────────────────┐
+                          ┌─────────────────--──────┐
                           │   Shared FPN Decoder    │  (lateral connections + top-down + fuse)
-                          └───────┬────────────────┘
+                          └───────┬────────────-────┘
                                   │  fused feature map
                   ┌───────────────┼───────────────┬───────────────┐
                   ▼               ▼               ▼               ▼
